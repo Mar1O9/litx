@@ -45,33 +45,14 @@
   # Enable the X11 windowing system.
   #services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
-  #services.xserver.displayManager.gdm.enable = true;
-  #services.xserver.desktopManager.gnome.enable = true;
-
 services.xserver = {
-  enable = true;
-  displayManager.gdm.enable = true;
-  desktopManager.gnome.enable = true;
-};
-
-environment.gnome.excludePackages = (with pkgs; [
-  atomix # puzzle game
-  cheese # webcam tool
-  epiphany # web browser
-  evince # document viewer
-  geary # email reader
-  gedit # text editor
-  gnome-characters
-  gnome-music
-  gnome-photos
-  #gnome-terminal
-  gnome-tour
-  hitori # sudoku game
-  iagno # go game
-  tali # poker game
-  totem # video player
-]);
+    enable = true;
+    desktopManager = {
+      xterm.enable = false;
+      xfce.enable = true;
+    };
+  };
+  services.displayManager.defaultSession = "xfce";
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -104,6 +85,7 @@ environment.gnome.excludePackages = (with pkgs; [
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.mar = {
     isNormalUser = true;
+    initialPassword = "password";
     description = "Mar";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
@@ -149,22 +131,6 @@ environment.gnome.excludePackages = (with pkgs; [
         # Optionally specify additional libraries
         libraries = with pkgs; [
           # Add libraries your application needs here
-          stdenv.cc.libc
-          zlib
-          glib
-          openssl
-          libGL
-          xorg.libX11.dev
-          xorg.libXft
-          xorg.libXcursor
-          xorg.libXi
-          xorg.libXinerama
-          xorg.libXrandr
-          xorg.libXxf86vm
-          libxkbcommon
-          wayland
-          glfw-wayland
-          alsa-lib
         ];
     };
     zsh = {
@@ -179,21 +145,7 @@ environment.gnome.excludePackages = (with pkgs; [
     # Use `makeLibraryPath` to generate paths for libraries
     LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
       # Add other libraries here
-      pkgs.stdenv.cc.cc.lib
-      pkgs.stdenv.cc.libc
-      pkgs.zlib
-      pkgs.glib
-      pkgs.openssl
-      pkgs.libGL
-      pkgs.xorg.libX11.dev
-      pkgs.xorg.libXft
-      pkgs.xorg.libXcursor
-      pkgs.xorg.libXi
-      pkgs.xorg.libXinerama
-      pkgs.xorg.libXrandr
-      pkgs.xorg.libXxf86vm
-      pkgs.libxkbcommon
-      pkgs.wayland
+
     ];
   };
 
@@ -203,22 +155,15 @@ environment.gnome.excludePackages = (with pkgs; [
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    inputs.zen-browser.packages."${system}".twilight-official # artifacts are downloaded from the official Zen repository
     inputs.ghostty.packages.x86_64-linux.default
     oh-my-posh
-    fastfetch
     vim
-    neovim
-    python313
     pkg-config
     git
     docker-compose
     wget
-    gnome-browser-connector
     deno
     go
-    air
-    wails
     rustup
     mold
     gnumake
@@ -231,26 +176,6 @@ environment.gnome.excludePackages = (with pkgs; [
     telegram-desktop
     postman
     vlc
-
-    # libraries
-
-    stdenv.cc.cc.lib
-    stdenv.cc.libc
-    zlib
-    glib
-    openssl
-    libGL
-    xorg.libX11.dev
-    xorg.libXft
-    xorg.libXcursor
-    xorg.libXi
-    xorg.libXinerama
-    xorg.libXrandr
-    xorg.libXxf86vm
-    libxkbcommon
-    wayland
-    glfw-wayland
-    alsa-lib
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
